@@ -16,11 +16,11 @@ var addNumbers = function (sum, numsLeft, completionCallback) {
 		});
 	} else if (numsLeft === 0) {
 		completionCallback(sum);
-		reader.close();
 	}
 }
 
 addNumbers(0, 3, function(sum) {
 	console.log("Total Sum: " + sum );
+	reader.close();
 });
 
