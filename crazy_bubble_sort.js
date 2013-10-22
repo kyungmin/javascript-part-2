@@ -1,5 +1,8 @@
 var readline = require('readline');
-reader = readline.createInterface();
+reader = readline.createInterface( {
+	input: process.stdin,
+	output: process.stdout
+});
 
 
 var askLessThan = function(el1, el2, callback) {
@@ -19,36 +22,40 @@ var performSortPass = function(arr, i, madeAnySwaps, callback) {
 	if (i < arr.length - 1) {
 		askLessThan(arr[i], arr[i+1], function(lessThan) {
 			if (lessThan) {
-				var el1 = arr[i];
-				var el2 = arr[i+1];
+				var el1 = arr[i], el2 = arr[i+1];
 				arr[i] = el2;
 				arr[i+1] = el1;
 				madeAnySwaps = true;
 			}
 			i++;
+			console.log(i);
 			performSortPass(arr, i, madeAnySwaps, callback);
 		});
 	} else if (i === arr.length - 1) {
 		callback(madeAnySwaps);
 	}
-
-
-	if (madeAnySwaps) {
-		performSortPass(arr, i, false, callback);
-	}
 };
 
 
-var crazyBubbleSort = function(arr, sortCompletionCalback) {
+var crazyBubbleSort = function(arr, sortCompletionCallback) {
 
-	var sortPassCallback = function() {
-
+	var sortPassCallback = function(madeAnySwaps) {
+		if (madeAnySwaps) {
+			performSortPass(arr, 0, false, sortPassCallback);
+		} else {
+			sortCompletionCallback(arr);
+			reader.close();
+		}
 	};
 
 	var passCallback = function(condition) {
 		if (condition) {
-			sortPassCallback();
+			sortPassCallback(true);
 		}
 	}
 
+	passCallback(true);
+
 };
+
+crazyBubbleSort([1,2,3], function (arr) { console.log(arr) });
